@@ -8,6 +8,7 @@ import __dirname from './utils/utils.js';
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import session from 'express-session';
+import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 
 import { Server } from 'socket.io';
@@ -24,6 +25,7 @@ const uri = "mongodb+srv://outputlevel10:KnneXOY0gNm7WAjk@cardealer.mkbx3tp.mong
 mongoose.connect(uri)
 
 app.use(express.json());
+//app.use(bodyParser.json({strict:true}));
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
 app.use(session({
@@ -42,11 +44,6 @@ app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCart);
 app.use('/api/sessions', routerSession);
 app.use('/views', viewsRouter);
-
-
-
-
-
 //-------------Handlebars---------------////
 
 //Se inicializa el motor de plantillas
