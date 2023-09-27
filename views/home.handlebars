@@ -1,9 +1,13 @@
-<h2>Inventario Actual</h2> 
 <script>
     let cart = "6502b876d911b1e21f0b42bb"
 </script>
 <section>
-    <a class="action" href="http://localhost:8080/views/carts/6502b876d911b1e21f0b42bb">Go to Cart</a>
+    <h1>Bienvenido, {{user.first_name}} {{user.last_name}}</h1>
+    {{#if admin}}
+    <h3>Si ves este mensaje, eres Administrador</h3><span><a href="/api/sessions/logout" target="_self">logout</a></span>
+    {{else}} <h3>Usuario comun</h3><span><a href="/api/sessions/logout" target="_self">logout</a></span>
+    {{/if}}
+    <a class="action cart" href="http://localhost:8080/views/carts/6502b876d911b1e21f0b42bb">Go to Cart</a>
     <div class="container">
         
         {{#each vehicles}}
@@ -46,4 +50,3 @@
 </section>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/index.js"></script>
-

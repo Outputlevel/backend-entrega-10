@@ -1,15 +1,17 @@
 import express from 'express';
+import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
+import session from 'express-session';
+import passport from 'passport';
+
 import routerProducts from './routes/endpoints/products.js'
 import routerCart from './routes/endpoints/cart.js'
 import routerSession from './routes/endpoints/session.js'
 import viewsRouter from './routes/views/views.js';
 import handlebars from 'express-handlebars';
 import __dirname from './utils/utils.js';
-import mongoose from 'mongoose';
-import MongoStore from 'connect-mongo';
-import session from 'express-session';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
+import initializatePassport from './config/passportConfig.js';
+
 
 import { Server } from 'socket.io';
 import { Cart } from "./productManager/dao/db/index.js";
@@ -32,12 +34,17 @@ app.use(session({
      store: MongoStore.create({
          mongoUrl: uri,
          mongoOptions: { useUnifiedTopology: true },
-         ttl: 15
+         ttl: 1500
      }),
      secret:'Coder2023',
      resave:false,
      saveUninitialized: false
  }))
+
+//Passport Init
+initializatePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //Use routers
 app.use('/api/products', routerProducts);

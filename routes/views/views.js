@@ -31,16 +31,21 @@ router.get('/', async (req, res) => {
         arrProps = {
             title: "Vechicles",
             style: "style.css",
-            vehicles: vehicles
+            vehicles: vehicles,
+            user: req.session.user //datos usuario y rol de usuario
         }
-
+        if(arrProps.user.role ==='admin'){
+            console.log('views, found admin', arrProps.user)
+            arrProps.admin = true
+        }
         if (!limit) {
-            console.log(vehicles)
+            //console.log(vehicles)
             return res.render('home', arrProps)
         }
         //Trae objetos por numero de limite
         const arrLimit = vehicles.splice(0, limit);
-        res.status(200).render('home', vehicles).send({arrLimit});
+        arrProps.vehicles = arrLimit
+        res.status(200).render('home', arrProps).send("Lista de vehiculos");
         
     } catch (err) {
         console.error(err)

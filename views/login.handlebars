@@ -7,21 +7,25 @@
     {{!-- <h4>Num de visitas: {{session.counter}}</h4> --}}
 
     <label for="username">Email</label>
-    <input type="text" placeholder="Email" id="email">
+    <input type="text" name="email" placeholder="Email" id="email">
 
     <label for="password">Password</label>
-    <input type="password" placeholder="Password" id="password">
+    <input type="password" name="password" placeholder="Password" id="password">
     
     <div class="flex-col-xs login-box">
         <button type="submit">Log In</button>
+        </form>
+        <a href="/views/register">register
         {{!-- <button>Sign Up</button> --}}
+        </a>
+        
     </div>
 
     {{!-- <div class="social">
         <div class="go"><i class="fab fa-google"></i>  Google</div>
         <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
     </div> --}}
-</form>
+
 {{#if loginFailed}}
     <script type="text/javascript">
         alert('Login Failed!');
