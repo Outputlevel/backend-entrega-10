@@ -3,6 +3,14 @@ import mongoose from "mongoose";
 const userCollection = "users";
 
 const userSchema = mongoose.Schema({
+    name: { //github
+        type: String,
+        minLength: 3,
+    },
+    username: { //github
+        type: String,
+        minLength: 3,
+    },
     first_name: {
         type: String,
         minLength: 3,
@@ -25,9 +33,7 @@ const userSchema = mongoose.Schema({
         require: true
     },
     password: {
-        type: String,
-        minLength: 4,
-        require: true
+        type: String
     },
     role: {
         type:String,

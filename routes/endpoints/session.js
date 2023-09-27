@@ -7,17 +7,19 @@ import local from 'passport-local';
 const router = Router();
 const US = new UserService();
 
-router.post("/register", passport.authenticate('register',{failureRedirect: '/api/sessions/failRegister'}),
-(req, res) => {
-    res.redirect("/views/login"); 
+//github-login
+router.get("/github", passport.authenticate('github', {scope: ['user:email']}), (req, res) => {
+    res.send({
+        status: 'success',
+        message: 'Success'
+    });
 });
 
-router.get("/failRegister", (req, res) => {
-    req.session.registerFailed = true;
-    console.log('Usuario no registrado');
-    res.redirect("/views/register")
+router.get("/githubcallback", passport.authenticate('github', {failureRedirect: '/login'}), (req, res) => {
+    req.session.user = req.user;
+    res.redirect('/views');
 });
-
+//Local
 router.post("/login",  passport.authenticate('login',{failureRedirect: '/api/sessions/failLogin'}), 
     async (req, res) => {
             if (!req.user) {
@@ -50,12 +52,22 @@ router.post("/login",  passport.authenticate('login',{failureRedirect: '/api/ses
         
 });
 
+router.post("/register", passport.authenticate('register',{failureRedirect: '/api/sessions/failRegister'}),
+(req, res) => {
+    res.redirect("/views/login"); 
+});
+//Local-Fail
 router.get("/failLogin", (req, res) => {
     req.session.loginFailed = true;
     console.log('/failLogin, Invalid Credentials');
     res.redirect("/views/login");
 });
-
+router.get("/failRegister", (req, res) => {
+    req.session.registerFailed = true;
+    console.log('Usuario no registrado');
+    res.redirect("/views/register")
+});
+//Logout
 router.get("/logout",  (req, res) => {
     req.session.destroy( error => {
         if (!error) res.redirect("/views/login");

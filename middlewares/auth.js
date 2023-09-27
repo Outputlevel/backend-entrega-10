@@ -11,7 +11,7 @@ const auth = function (req, res, next) {
 
 function logged(req, res, next) {
     if (req.session.user) {
-        return res.redirect("/profile");
+        return res.redirect("/views");
     }
 
     next();
