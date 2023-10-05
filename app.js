@@ -84,13 +84,11 @@ socketServer.on('connection', socket => {
     });
 
     socket.on('addProduct', data => {
-        let cartId = '6502b876d911b1e21f0b42bb'
         let cart = new Cart()
-        cart.addToCart(cartId, data)
-        vehicleId = data
-        console.log("dataa", vehicleId)
+        console.log("dataa", data)
+        let vehicle = cart.addToCart(data.cid, data.pid)
         console.log("item added")
-        socketServer.emit('productRefresh', {vehicleId});
+        socketServer.emit('addedToCart', vehicle);
     });
 
     socket.on('deleteVehicle', data => {

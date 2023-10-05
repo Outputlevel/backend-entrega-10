@@ -12,8 +12,9 @@ socket.on('messageShow', data =>{
     ///agregar los divs por js de msg recivido
 })
 
-socket.on('productRefresh', data =>{
+socket.on('addedToCart', data =>{
     ///agregar los divs por js de msg recivido
+    alert("producto agregado")
     console.log("refreshed")
 })
 
@@ -22,14 +23,17 @@ function newMessage(){
     socket.emit('message', newMsg.value);
 }
 
-function itemToCart(id){
-    
-    socket.emit('addProduct', id);
+function itemToCart(pid){
+    let data = {cid:cartId, pid}
+    //console.log("dataa", data)
+    socket.emit('addProduct', data);
     
 
 }
 
+function addToCart(pid){
 
+}
 function send() {
 
     if(!titleInput.value){

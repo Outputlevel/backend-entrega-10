@@ -26,14 +26,22 @@ router.get('/', async (req, res) => {
         const startIndex = (page - 1)*limit
         const endIndex = page * limit
         
-        const vehicles = await data.getProducts()
-        
+        let vehicles = await data.getProducts()
+        let newVehicles = vehicles[1]
+        let newVehicle1 = newVehicles.carts.filter(e=>e.cart == '6502b876d911b1e21f0b42bb' )
+        vehicles.forEach(e=>{ //insertar userCart para poder agregar el producto al carrito
+            e.userCart = req.session.user.cart
+            //e.carts.filter(c=>c.cart == '65152a2d523ea60d7584f78a') tratar de eliminar otros carritos del array por seguridad
+        })
         arrProps = {
             title: "Vechicles",
             style: "style.css",
             vehicles: vehicles,
-            user: req.session.user //datos usuario y rol de usuario
+            user: req.session.user, //datos usuario y rol de usuario
+            cartId: req.session.user.cart
         }
+        //arrProps.vehicles.userCart = arrProps.user.cart //conecta carrito de usuario a array de vehiculos
+        console.log("ggg",vehicles)
         if(arrProps.user.role ==='admin'){
             console.log('views, found admin', arrProps.user)
             arrProps.admin = true
@@ -165,9 +173,13 @@ router.get('/carts/:cid', async (req, res) => {
             title: "cart",
             style: "style.css",
             cart: cart,
-            products: cart.products 
+            products: cart.products,
+            cartEmpty: true
         }
-        console.log("ggg", cart)
+        if(arrProps.products.length > 0){
+            console.log('views, has products')
+            arrProps.cartEmpty = false
+        }
         return res.render('cart', arrProps)
     } catch (err) {
         console.error(err)

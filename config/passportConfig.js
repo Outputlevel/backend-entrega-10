@@ -1,10 +1,12 @@
 import passport from 'passport';
+import {Cart} from '../productManager/dao/db/index.js'
 import local from 'passport-local';
 import GitHubStrategy from 'passport-github2'
 import userModel from '../productManager/dao/models/users.js';
 import { createHash, isValidPassword } from '../utils/functionsUtil.js';
 
 const localStratergy = local.Strategy;
+const cart = new Cart()
 const initializatePassport = () => {
     //github
     passport.use(
@@ -12,18 +14,23 @@ const initializatePassport = () => {
         new GitHubStrategy({
             clientID: 'Iv1.0286a2a26f33742e', // process.env.CLIENT_ID
             clientSecret: '774d0bb282271ac95f185f8353b0406898f14b43', //process.env.SECRET_ID
-            callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
+            callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
+            scope:["user:email"],
     },
     async (accessToken, refreshToken, profile, done) => {
         try {
             console.log(profile); 
-            let user = await userModel.findOne({username: profile._json.login})
+            let user = await userModel.findOne({$or:[{username: profile._json.login},{email:profile.emails[0].value}]})
             if(!user) {
+                const testPass = "1234"
+                //crear carrito para asignar al usuario nuevo
+                const newCart = await cart.createCart()
                 let newUser = {
-                    username: profile._json.login,
-                    //email: profile._json.email,
+                    username: profile._json.login.toLowerCase(),
+                    email: profile.emails[0].value,
                     name: profile._json.name,
-                    password: ''
+                    password: createHash(testPass),
+                    cart: newCart._id
                 }
                 let result = await userModel.create(newUser);
                 done(null, result);
@@ -41,7 +48,7 @@ const initializatePassport = () => {
             usernameField: 'email'
         },
         async (req, username, password, done) => {
-            const { first_name, last_name, email, age } = req.body;
+            const {  first_name, last_name, email, age } = req.body;
             //crear rol admin
             const emailAdmin = req.body.email.slice(0,5)
             const passwordAdmin = req.body.password.slice(0,5)
@@ -55,8 +62,8 @@ const initializatePassport = () => {
                     console.log('User already exists');
                     return done(null, false);
                 }
-
-                const newUser = {first_name, last_name, email, age, role:req.body.role, password: createHash(password)};
+                const newCart = await cart.createCart()
+                const newUser = {first_name, last_name, email, age, role:req.body.role, password: createHash(password), cart:newCart};
                 let result = await userModel.create(newUser);
 
                 return done(null, result);
@@ -71,9 +78,9 @@ const initializatePassport = () => {
         { usernameField: 'email' },
         async (username, password, done) => {
             try {
-                const user = await userModel.findOne({email: username});
+                const user = await userModel.findOne({$or:[{email: username},{username: username}]});
                 if (!user) {
-                    console.log('User does not exist');
+                    console.log('passport local, User does not exist');
                     return (null, false);
                 }
                 if(!isValidPassword(user, password)) {

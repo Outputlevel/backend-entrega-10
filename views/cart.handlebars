@@ -3,6 +3,7 @@
 </script>
 <section>
     <div class="container">
+        {{#if cartEmpty}} <h2>Cart is empty</h2> {{/if}}
         {{#each products}}
             <div class="card">
                 <div class="header">

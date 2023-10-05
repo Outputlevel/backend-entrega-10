@@ -28,11 +28,14 @@ router.post("/login",  passport.authenticate('login',{failureRedirect: '/api/ses
                 return res.status(400).send({status: "error", error: "Invalid credentials"});
             }
             req.session.user = {
+                username: req.user.username,
+                name: req.user.name,
                 first_name: req.user.first_name,
                 last_name: req.user.last_name,
                 email: req.user.email,
                 age: req.user.age,
-                role: req.user.role
+                role: req.user.role,
+                cart: req.user.cart
             }
             req.session.loginFailed = false;
             res.redirect("/views/");
