@@ -22,6 +22,7 @@ router.get("/githubcallback", passport.authenticate('github', {failureRedirect: 
 //Local
 router.post("/login",  passport.authenticate('login',{failureRedirect: '/api/sessions/failLogin'}), 
     async (req, res) => {
+        try{
             if (!req.user) {
                 req.session.loginFailed = true;
                 //res.redirect("/views/login");
@@ -52,6 +53,11 @@ router.post("/login",  passport.authenticate('login',{failureRedirect: '/api/ses
             console.log("here",req.session.user)
             req.session.loginFailed = false;
             res.redirect("/views/profile"); */
+        }catch(e) {
+        console.log(e)
+        return res.send(e.message)
+        }
+            
         
 });
 

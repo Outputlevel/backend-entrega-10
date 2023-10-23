@@ -97,3 +97,41 @@ socketServer.on('connection', socket => {
         socketServer.emit('deletedVehicle', {vehicleId});
     });
 });
+
+/* });
+const cartSchema = new mongoose.Schema({
+    products: {
+        type: [
+            {
+                product: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "products"
+                },
+                quantity: {
+                    type: Number,
+                    default: 1
+                }
+            }
+        ],
+        default: []
+    }
+});
+
+export default (io) => {
+    io.on("connection", (socket) => {
+
+        socket.on("createProduct", async (data) => {
+
+            try {
+                await ProductService.createProduct(data);
+                const products = await ProductService.getAllProducts();
+                socket.emit("publishProducts", products);
+            } catch (error) {
+                socket.emit("statusError", error.message);
+            }
+        });
+
+        socket.on("deleteProduct", async (data) => {
+            try {
+                const result = await ProductService.deleteProduct(data.pid);
+*/

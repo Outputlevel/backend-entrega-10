@@ -23,9 +23,9 @@ function newMessage(){
     socket.emit('message', newMsg.value);
 }
 
-function itemToCart(pid){
-    let data = {cid:cartId, pid}
-    //console.log("dataa", data)
+function itemToCart(pid, cid){
+    let data = {cid, pid}
+    console.log("dataa", data)
     socket.emit('addProduct', data);
     
 
