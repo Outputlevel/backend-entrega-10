@@ -1,21 +1,17 @@
 import { Router } from "express";
-import { Product, Cart } from '../../productManager/dao/db/index.js'
+import { Product, Cart } from '../productManager/dao/db/index.js'
 //import { messages } from "../app.js";
-import { testPush } from "../../app.js";
-import { vehicleId } from "../../app.js";
-import {auth, logged} from '../../middlewares/auth.js'
+import { testPush } from "../app.js";
+import { vehicleId } from "../app.js";
 import session from "express-session";
-
-const router = Router();
 
 const data = new Product() //Da de alta mi constructor
 const carts = new Cart()
 
 let arrProps = null
 
-
 //get all products
-router.get('/', async (req, res) => {
+export const getallProducts =  async (req, res) => {
     try {
         if(typeof(vehicleId) === 'object'){
             console.log("existe")
@@ -27,12 +23,7 @@ router.get('/', async (req, res) => {
         const endIndex = page * limit
         
         let vehicles = await data.getProducts()
-        let newVehicles = vehicles[1]
-        let newVehicle1 = newVehicles.carts.filter(e=>e.cart == '6502b876d911b1e21f0b42bb' )
-        vehicles.forEach(e=>{ //insertar userCart para poder agregar el producto al carrito
-            e.userCart = req.session.user.cart
-            //e.carts.filter(c=>c.cart == '65152a2d523ea60d7584f78a') tratar de eliminar otros carritos del array por seguridad
-        })
+      
         arrProps = {
             title: "Vechicles",
             style: "style.css",
@@ -59,10 +50,10 @@ router.get('/', async (req, res) => {
         console.error(err)
         return []
     }
-});
+};
 
 //single product by id
-router.get('/vehicle/:idVehicle', async (req, res) => {
+export const singleProductById = async (req, res) => {
     try {
         const idParam = req.params.idVehicle;
         const limit = req.query.limit;
@@ -86,10 +77,9 @@ router.get('/vehicle/:idVehicle', async (req, res) => {
         console.error(err)
         return []
     }
-});
-
-
-router.get('/realtimeproducts/', async (req, res) => {
+};
+//realtimeViews
+export const realtimeViews = async (req, res) => {
     try {
         const limit = req.query.limit;
         const vehicles = await data.getProducts()
@@ -144,9 +134,9 @@ router.get('/realtimeproducts/', async (req, res) => {
         console.error(err)
         return []
     }
-});
-
-router.get('/chat', async (req, res) => {
+};
+//chat
+export const chat = async (req, res) => {
     try {
         //const limit = req.query.limit;
         const vehicles = await data.getProducts()
@@ -161,9 +151,9 @@ router.get('/chat', async (req, res) => {
         console.error(err)
         return []
     }
-});
-
-router.get('/carts/:cid', async (req, res) => {
+};
+//cart by id
+export const getCartById = async (req, res) => {
     try {
         const cartId = req.params.cid;
         const cart = await carts.getCartById(cartId)
@@ -185,10 +175,11 @@ router.get('/carts/:cid', async (req, res) => {
         console.error(err)
         return []
     }
-});
+};
+
 
 //Session---------
-router.get("/session", (req, res) => {
+export const getsession = (req, res) => {
     let username = req.session.user ? req.session.user : '';
     if (req.session.counter) {
         req.session.counter++;
@@ -197,26 +188,26 @@ router.get("/session", (req, res) => {
         req.session.counter = 1;
         res.send(`Bienvenido ${username}!`);
     }
-});
-
-router.get('/login', logged, async (req, res) => {
-     try {
-        //
-        arrProps = {
-            title: "Login",
-            style: "style.css",
-            loginFailed: req.session.loginFailed ?? false,
-            registerSuccess: req.session.registerSuccess ?? false
-        }
-        res.status(200).render('login', arrProps);
-        
-    } catch (err) {
-        console.error(err)
-        return []
-    }
-});
-
-router.get('/register', async (req, res) => {
+};
+//login
+export const loginView = async (req, res) => {
+    try {
+       //
+       arrProps = {
+           title: "Login",
+           style: "style.css",
+           loginFailed: req.session.loginFailed ?? false,
+           registerSuccess: req.session.registerSuccess ?? false
+       }
+       res.status(200).render('login', arrProps);
+       
+   } catch (err) {
+       console.error(err)
+       return []
+   }
+};
+//register
+export const registerView = async (req, res) => {
     try {
         arrProps = {
             title: "Register",
@@ -229,9 +220,9 @@ router.get('/register', async (req, res) => {
         console.error(err)
         return []
     }
-});
-
-router.get('/profile', async (req, res) => {
+};
+//profile
+export const profileView = async (req, res) => {
     try {
         //const userId = req.params.uid;
         //let data = {userId}
@@ -247,13 +238,11 @@ router.get('/profile', async (req, res) => {
         console.error(err)
         return []
     }
-});
-
-router.get("/logout",  (req, res) => {
+};
+//logout
+export const logout = (req, res) => {
     req.session.destroy( error => {
         if (!error) res.send('Logout ok!');
         else res.send({status: 'Logout ERROR', body: error});
     });
-});
-
-export default router;
+};

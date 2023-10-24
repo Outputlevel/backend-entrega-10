@@ -1,3 +1,4 @@
+
 const auth = function (req, res, next) {
     const {username, password} = req.query;
     if (username !== 'rix' || password !== 'Coder2023') {

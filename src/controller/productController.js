@@ -1,9 +1,5 @@
-import { Router } from "express";
-import { Product } from '../../productManager/dao/db/index.js'
-import {Response} from '../response.js'
-
-const router = Router()
-
+import { Product } from '../productManager/dao/db/index.js'
+import {Response} from '../routes/response.js'
 //Da de alta mi constructor
 
 const data = new Product()
@@ -12,9 +8,8 @@ let arrProps = {}
 let code = 201
 let results = {}
 
-///-----------------------------PRODUCTS-----------------------------////
 //Gett all products
-router.get('/', async (req, res) => {
+export const getProducts = async (req, res) => {
     try {
         
         const limit = Number(req.query.limit);
@@ -46,10 +41,10 @@ router.get('/', async (req, res) => {
         console.error(err)
         return []
     }
-});
+};
 
 //Search products
-router.get('/search', async (req, res) => {
+export const searchProducts =  async (req, res) => {
     try {
         const itemParams = req.query;
         delete itemParams.page; delete itemParams.limit;
@@ -75,10 +70,10 @@ router.get('/search', async (req, res) => {
             message: error.message
         });
     }
-});
+};
 
 //Trae vehiculos por Id
-router.get('/:idVehicle', async (req, res) => {
+export const getProductById =  async (req, res) => {
     try{
         const idParam = req.params.idVehicle;
         const filteredById = await data.getProductById(idParam)
@@ -92,10 +87,9 @@ router.get('/:idVehicle', async (req, res) => {
         console.error(err)
         return []
     } 
-});
-
+};
 //Agrega nuevo vehiculo
-router.post('/', async (req, res) => {
+export const addProduct = async (req, res) => {
     try {
         const productData = {
            title: req.body.title ?? 'No title',
@@ -118,12 +112,10 @@ router.post('/', async (req, res) => {
     } catch (err) {
         console.error(err)
         return []
-    } 
-    
-});
-
+    }  
+};
 //Actualiza vehiculo
-router.put('/:idVehicle', async (req, res) => {
+export const updateVehicle = async (req, res) => {
     try {
         //Encuentra vehiculo por id
         const idParam = req.params.idVehicle;
@@ -150,10 +142,10 @@ router.put('/:idVehicle', async (req, res) => {
         return []
     } 
     
-});
+};
 
 //Elimina vehiculo por Id
-router.delete('/:idVehicle', async (req, res) => {
+export const deleteVehicleById = async (req, res) => {
     try{
         const idParam = req.params.idVehicle;
         const deleteProduct = await data.deleteProductById(idParam)
@@ -164,11 +156,9 @@ router.delete('/:idVehicle', async (req, res) => {
         console.error(err)
         return []
     } 
-});
-
-
+};
 ///Realtime Products
-router.get('/realtimeProducts', async (req, res) => {
+export const realtimeProducts =  async (req, res) => {
     try {
         const limit = req.query.limit;
         const vehicles = await data.getProducts()
@@ -185,34 +175,4 @@ router.get('/realtimeProducts', async (req, res) => {
         console.error(err)
         return []
     }
-});
-//middleware, in progress
-/* function pagination(model){
-    return async (req, res, next) => {
-        const limit = Number(req.query.limit);
-        const page = Number(req.query.page)
-        const startIndex = ((page) - 1)*limit
-        const endIndex = page * limit
-        //const vehicles = await data.getProducts()
-        
-
-        //pagination
-        if(endIndex < model.length){
-            results.next =  { page: page + 1, limit: limit }
-        }
-        if(startIndex > 0){
-            results.previous =  { page: page - 1, limit: limit }
-        }
-        //operacion
-        results.data = model.slice(startIndex, endIndex)
-
-         if (!limit || !page) {
-            response = new Response(code, "success", model )
-            return res.status(code).send(response);
-        }  
-        res.pagination = results
-        next()
-    }
-} */
-
-export default router
+};

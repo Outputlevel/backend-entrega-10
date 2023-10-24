@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import passport from 'passport';
+import 'dotenv/config'
 
 import routerProducts from './routes/endpoints/products.js'
 import routerCart from './routes/endpoints/cart.js'
@@ -22,8 +23,9 @@ export let vehicleId
 
 const app = express();
 
+
 /////////Mongo DB/////////
-const uri = "mongodb+srv://outputlevel10:KnneXOY0gNm7WAjk@cardealer.mkbx3tp.mongodb.net/carDealer?retryWrites=true&w=majority"
+const uri = process.env.MONGO_URI
 mongoose.connect(uri)
 
 app.use(express.json());
@@ -36,7 +38,7 @@ app.use(session({
          mongoOptions: { useUnifiedTopology: true },
          ttl: 1500
      }),
-     secret:'Coder2023',
+     secret: process.env.MONGO_SESSION_SECRET,
      resave:false,
      saveUninitialized: false
  }))

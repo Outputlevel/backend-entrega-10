@@ -1,19 +1,12 @@
-import { Router } from "express";
-import { Cart } from '../../productManager/dao/db/index.js'
-import {Response} from '../response.js'
-
-const router = Router()
+import { Cart } from '../productManager/dao/db/index.js'
+import {Response} from '../routes/response.js'
 
 //Da de alta mi constructor
 export const cart = new Cart()
-//cart.addToCart(1,3)
 let code
 let response
-
-///-----------------------------CART-----------------------------////
-
 //Trae Todos los carritos
-router.get('/', async (req, res) => {
+export const getCarts = async (req, res) => {
     try {
         const limit = req.query.limit;
         const cartProducts = await cart.getCarts()
@@ -29,12 +22,10 @@ router.get('/', async (req, res) => {
     } catch (err) {
         console.error(err)
         return []
-    } 
-    
-});
-
+    }  
+}
 ///Trae Carrito por ID
-router.get('/:cartId', async (req, res) => {
+export const getCartById = async (req, res) => {
     try{
         const idParam = req.params.cartId;
         const filteredById = await cart.getCartById(idParam)
@@ -48,10 +39,9 @@ router.get('/:cartId', async (req, res) => {
         console.error(err)
         return []
     } 
-});
-
+};
 //Crear Carrito
-router.post('/', async (req, res) => {
+export const createCart = async (req, res) => {
     try {
         const newCart = await cart.createCart()
         if(newCart){
@@ -64,10 +54,9 @@ router.post('/', async (req, res) => {
         console.error(err)
         return []
     } 
-});
-
+};
 //Elimina carrito por Id
-router.delete('/:cartId', async (req, res) => {
+export const deleteCartById = async (req, res) => {
     try{
         const idParam = req.params.cartId;
         const deleteProduct = await cart.deleteCartById(idParam)
@@ -78,10 +67,9 @@ router.delete('/:cartId', async (req, res) => {
         console.error(err)
         return []
     } 
-});
-
+};
 //add to cart
-router.post('/:cartId/product/:productId', async (req, res) => {
+export const addToCart =  async (req, res) => {
     try {
         const cartId = req.params.cartId;
         const productId = req.params.productId;
@@ -96,10 +84,9 @@ router.post('/:cartId/product/:productId', async (req, res) => {
         console.error(err)
         return []
     } 
-});
-
+};
 //Delete product from cart
-router.delete('/:cartId/product/:productId', async (req, res) => {
+export const deleteCart = async (req, res) => {
     try {
         const cartId = req.params.cartId;
         const productId = req.params.productId;
@@ -114,10 +101,9 @@ router.delete('/:cartId/product/:productId', async (req, res) => {
         console.error(err)
         return []
     } 
-});
-
+};
 //update quantity 
-router.put('/:cartId/product/:productId', async (req, res) => {
+export const updateCart =  async (req, res) => {
     try {
         const cartId = req.params.cartId;
         const productId = req.params.productId;
@@ -136,6 +122,4 @@ router.put('/:cartId/product/:productId', async (req, res) => {
         console.error(err)
         return []
     } 
-});
-
-export default router
+}

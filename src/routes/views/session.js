@@ -1,5 +1,5 @@
-import { Router } from "express";
-import auth from '../../middlewares/auth.js'
+/* import { Router } from "express";
+import auth from '../../../middlewares/auth.js'
 
 const router = Router();
 ////------------session API---------//////
@@ -25,4 +25,4 @@ router.get("/logout",  (req, res) => {
     
 });
 
-export default router
+export default router */
